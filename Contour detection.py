@@ -1,6 +1,16 @@
 import cv2
 import numpy as np
 
+# Function to resize image
+
+def resize(image):
+   scale_percent = 20 # percent of original size
+   width = int(image.shape[1] * scale_percent / 100)
+   height = int(image.shape[0] * scale_percent / 100)
+   dim = (width, height)
+   return cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
+
+
 # Function for vertical and Horizontal stacking of images
 def concat_list(list):
    return cv2.vconcat([cv2.hconcat(list_2)
@@ -51,41 +61,40 @@ def getContours(img):
                objectType = "Oval"
             
          cv2.rectangle(imgCopy,(x, y),(x+w,y+h),(0,255,0))
-         cv2.putText(imgCopy,objectType,(int(x+(w/2)-15),int(y+(h/2))+7),cv2.FONT_HERSHEY_COMPLEX,0.5,(0,0,0),2)
+         cv2.putText(imgCopy,objectType,(int(x+(w/2)-30),int(y+(h/2))+7),cv2.FONT_HERSHEY_COMPLEX,0.45,(0,0,0),2)
          
 
-img = cv2.imread("C:/Users/Kamalesh/Python program_ test/Virtual paint assignment/Polygon.png")
-img = cv2.resize(img,(500,300))
+img_org = cv2.imread("C:/Users/Kamalesh/Python program_ test/Virtual paint assignment/Polygon.png")
+img = resize(img_org)
+img = cv2.imwrite("C:/Users/Kamalesh/Python program_ test/Virtual paint assignment/Polygon_new.png",img)
+img = cv2.imread("C:/Users/Kamalesh/Python program_ test/Virtual paint assignment/Polygon_new.png")
 imgCopy = img.copy()
 
 # Converting original image to Gray image, saving the Gray image and reading saved Gray image
 imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-imgGray = cv2.resize(imgGray,(500,300))
 imgGray = cv2.imwrite("C:/Users/Kamalesh/Python program_ test/Virtual paint assignment/Gray.png",imgGray)
 imgGray = cv2.imread("C:/Users/Kamalesh/Python program_ test/Virtual paint assignment/Gray.png")
 
 # Converting original image to Gray image, saving the Gray image and reading saved Gray image
 imgBlur = cv2.GaussianBlur(imgGray,(7,7),1)
-imgBlur = cv2.resize(imgBlur,(500,300))
 imgBlur = cv2.imwrite("C:/Users/Kamalesh/Python program_ test/Virtual paint assignment/Blur.png",imgBlur)
 imgBlur = cv2.imread("C:/Users/Kamalesh/Python program_ test/Virtual paint assignment/Blur.png")
 
 
 # Detecting edge using Canny()
-imgCanny = cv2.Canny(imgBlur,50,50)
-imgCanny2 = cv2.resize(imgCanny,(500,300))
-imgCanny = cv2.imwrite("C:/Users/Kamalesh/Python program_ test/Virtual paint assignment/Canny.png",imgCanny2)
+imgCanny1 = cv2.Canny(imgBlur,50,50)
+# imgCanny1 = resize(imgCanny)
+imgCanny = cv2.imwrite("C:/Users/Kamalesh/Python program_ test/Virtual paint assignment/Canny.png",imgCanny1)
 imgCanny = cv2.imread("C:/Users/Kamalesh/Python program_ test/Virtual paint assignment/Canny.png")
 
-getContours(imgCanny2)
-
+getContours(imgCanny1)
 
 # Creating zeros 
 imgBlank = np.zeros_like(img)
 
 # Horizontal and vertical concatenation
 con = concat_list([[img,imgGray,imgBlur],
-                    [imgCanny,imgCopy,imgBlank]])
+                    [imgCanny,imgCopy,img]])
 
 cv2.imshow("Stacked",con)
 
