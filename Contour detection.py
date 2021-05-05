@@ -25,24 +25,31 @@ def getContours(img):
         
          # Conditional statement for Name of Shapes 
          if objCor == 3: 
-            objectType = "Tri"
+            objectType = "Triangle"
          elif objCor == 4:
-            objectType = "Sqr"
+            aspRatio = w/h
+            if aspRatio >0.95 and aspRatio< 1.12:
+               objectType = "Square"
+            else: 
+               objectType = "Rectangle"
          elif objCor == 5:
-            objectType = "Pent"
+            objectType = "Pentagon"
          elif objCor == 6:
-            objectType = "Hex"
+            objectType = "Hexagon"
          elif objCor == 7:
-            objectType = "Hept" 
+            objectType = "Heptagon" 
          elif objCor == 8:
-            objectType = "Oct"  
+            objectType = "Octagon"  
          elif objCor == 9:
-            objectType = "Nano" 
+            objectType = "Nonagon" 
 
-         else: 
-            objectType = "Cir"
+         else:
+            aspRatio2 = w/h
+            if aspRatio2> 0.95 and aspRatio2< 1.2:
+               objectType = "Circle"
+            else:
+               objectType = "Oval"
             
-          
          cv2.rectangle(imgCopy,(x, y),(x+w,y+h),(0,255,0))
          cv2.putText(imgCopy,objectType,(int(x+(w/2)-15),int(y+(h/2))+7),cv2.FONT_HERSHEY_COMPLEX,0.5,(0,0,0),2)
          
@@ -50,7 +57,6 @@ def getContours(img):
 img = cv2.imread("C:/Users/Kamalesh/Python program_ test/Virtual paint assignment/Polygon.png")
 img = cv2.resize(img,(500,300))
 imgCopy = img.copy()
-
 
 # Converting original image to Gray image, saving the Gray image and reading saved Gray image
 imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
